@@ -88,6 +88,8 @@ class Loupe(imageView: ImageView, container: ViewGroup) : View.OnTouchListener,
 
     var minimumFlingVelocity: Float = MIN_FLING_VELOCITY
 
+    var isDragToDismissEnabled = true
+
     private var flingAnimator: Animator = ValueAnimator()
 
     // bitmap matrix
@@ -162,6 +164,10 @@ class Loupe(imageView: ImageView, container: ViewGroup) : View.OnTouchListener,
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
+                if (!isDragToDismissEnabled) {
+                    return true
+                }
+
                 if (e2?.pointerCount != 1) {
                     return true
                 }
@@ -180,6 +186,10 @@ class Loupe(imageView: ImageView, container: ViewGroup) : View.OnTouchListener,
                 velocityX: Float,
                 velocityY: Float
             ): Boolean {
+                if (!isDragToDismissEnabled) {
+                    return true
+                }
+
                 e1 ?: return true
 
                 if (scale > minScale) {
@@ -562,7 +572,7 @@ class Loupe(imageView: ImageView, container: ViewGroup) : View.OnTouchListener,
         }
     }
 
-    private fun shouldTriggerDragToDismissAnimation() = dragDistance() > dragToDismissThreshold
+    private fun shouldTriggerDragToDismissAnimation() = isDragToDismissEnabled && dragDistance() > dragToDismissThreshold
 
     private fun restoreViewTransform() {
         val imageView = imageViewRef.get() ?: return
